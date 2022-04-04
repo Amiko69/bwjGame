@@ -36,7 +36,6 @@ public class controller : MonoBehaviour
         transform.transform.rotation = Quaternion.Euler(0, 0, -angle );
 
         rb.AddForce(-transform.up * 10);
-        print(rb.velocity);
 
         if (justJumped)
         {

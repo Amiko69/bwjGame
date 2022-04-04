@@ -2,19 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class stuff : MonoBehaviour
+public class polygonMesh : MonoBehaviour
 {
     public PolygonCollider2D polyCollider;
 
     void Start()
     {
         polyCollider = GetComponent<PolygonCollider2D>();
-        PolyMesh(3, 10);
     }
+
     private void Update()
     {
-        PolyMesh(9, 99);
-
+        PolyMesh(5, 99);
     }
 
     void PolyMesh(float radius, int n)
@@ -59,7 +58,7 @@ public class stuff : MonoBehaviour
         mesh.normals = normals;
 
         //polyCollider
-        /*polyCollider.pathCount = 1;*/
+        polyCollider.pathCount = 1;
 
         List<Vector2> pathList = new List<Vector2> { };
         for (int i = 0; i < n; i++)
@@ -68,6 +67,7 @@ public class stuff : MonoBehaviour
         }
         Vector2[] path = pathList.ToArray();
 
-        /*polyCollider.SetPath(0, path);*/
+        polyCollider.SetPath(0, path);
     }
+    
 }
