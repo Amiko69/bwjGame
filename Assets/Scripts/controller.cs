@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class controller : MonoBehaviour
@@ -9,7 +7,7 @@ public class controller : MonoBehaviour
     bool justMovedR = false;
     bool justMovedL = false;    
 
-    CapsuleCollider2D collider;
+    CapsuleCollider2D collider1;
     public LayerMask groundLayer;
     Rigidbody2D rb;
     GameObject sphere;
@@ -18,14 +16,13 @@ public class controller : MonoBehaviour
     {
         sphere = GameObject.FindGameObjectWithTag("s");
         rb = GetComponent<Rigidbody2D>();
-        collider = GetComponent<CapsuleCollider2D>();
+        collider1 = GetComponent<CapsuleCollider2D>();
     }
 
     void Update()
     {
         HandleInput();
-        Debug.DrawRay(collider.bounds.center, rb.velocity, Color.green);
-
+        Debug.DrawRay(collider1.bounds.center, rb.velocity, Color.green);
     }
 
     private void FixedUpdate()
@@ -33,9 +30,9 @@ public class controller : MonoBehaviour
         float xdif = -sphere.transform.position.x + transform.position.x;
         float ydif = -sphere.transform.position.y + transform.position.y;
         float angle = Mathf.Atan2(xdif, ydif) * Mathf.Rad2Deg;
-        transform.transform.rotation = Quaternion.Euler(0, 0, -angle );
+        transform.transform.rotation = Quaternion.Euler(0, 0, -angle);
 
-        rb.AddForce(-transform.up * 10);
+        rb.AddForce(transform.up * 10);
 
         if (justJumped)
         {
@@ -46,6 +43,7 @@ public class controller : MonoBehaviour
         if (justMovedL) { transform.position += transform.right * -speed ; justMovedL = false; }
 
     }
+
     void HandleInput()
     {
         
@@ -54,6 +52,8 @@ public class controller : MonoBehaviour
             justJumped = true;
             
         }
+
+        
         if (Input.GetKey(KeyCode.D))
         {
             justMovedR = true;
@@ -64,14 +64,11 @@ public class controller : MonoBehaviour
             justMovedL = true;
         }
         
-        
     }
 
     private bool isGrounded()
     {
-        RaycastHit2D raycast = Physics2D.Raycast(collider.bounds.center, -transform.up,(transform.localScale.y / 2 + .2f), groundLayer);
-
-        print(raycast.collider != null);
+        RaycastHit2D raycast = Physics2D.Raycast(collider1.bounds.center, -transform.up,(transform.localScale.y / 2 + .2f), groundLayer);
         if (raycast.collider != null) return true;
         else return false;
     }
