@@ -6,7 +6,7 @@ public class ColliderScript : MonoBehaviour
 {
     public int NumEdges;
     public float Radius;
-    void Update()
+    void Start()
     {
         EdgeCollider2D edgeCollider = GetComponent<EdgeCollider2D>();
         Vector2[] points = new Vector2[NumEdges];
