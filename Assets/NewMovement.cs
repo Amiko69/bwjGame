@@ -4,8 +4,9 @@ public class NewMovement : MonoBehaviour
 {
     float speed = .14f;
     bool justJumped = false;
-    bool justMovedR = false;
-    bool justMovedL = false;
+    float coolDown = 0;
+    /*bool justMovedR = false;
+    bool justMovedL = false;*/
 
     CapsuleCollider2D collider1;
     public LayerMask groundLayer;
@@ -24,6 +25,7 @@ public class NewMovement : MonoBehaviour
 
     void Update()
     {
+        coolDown -= Time.deltaTime;
         HandleInput();
         Debug.DrawRay(collider1.bounds.center, rb.velocity, Color.green);
     }
@@ -56,7 +58,7 @@ public class NewMovement : MonoBehaviour
             }
             justJumped = false;
         }
-        transform.position += transform.right * speed; justMovedR = false;
+        transform.position += transform.right * speed;
         //if (justMovedL)transform.position += transform.right * -speed; justMovedL = false;
 
     }
@@ -68,7 +70,7 @@ public class NewMovement : MonoBehaviour
             justJumped = true;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && coolDown <= 0)
         {
             bw = !bw;
             if (bw)
@@ -83,6 +85,8 @@ public class NewMovement : MonoBehaviour
                 rb.AddForce(transform.up * 10, ForceMode2D.Impulse);
                 Invoke("turnOnCollider", 0.2f);
             }
+
+            coolDown = 2;
         }
     }
 
