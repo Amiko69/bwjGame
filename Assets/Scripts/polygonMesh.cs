@@ -13,7 +13,7 @@ public class polygonMesh : MonoBehaviour
 
     private void Update()
     {
-        PolyMesh(5, 99);
+        PolyMesh(20, 300);
     }
 
     void PolyMesh(float radius, int n)
