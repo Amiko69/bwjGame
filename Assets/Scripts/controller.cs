@@ -30,11 +30,7 @@ public class controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float xdif = -sphere.transform.position.x + transform.position.x;
-        float ydif = -sphere.transform.position.y + transform.position.y;
-        float angle = Mathf.Atan2(xdif, ydif) * Mathf.Rad2Deg;
-        transform.transform.rotation = Quaternion.Euler(0, 0, -angle );
-
+        circleAngle();
         rb.AddForce(-transform.up * 10);
 
         if (justJumped)
@@ -46,6 +42,14 @@ public class controller : MonoBehaviour
         if (justMovedL) { transform.position += transform.right * -speed ; justMovedL = false; }
 
     }
+    void circleAngle()
+    {
+        float xdif = -sphere.transform.position.x + transform.position.x;
+        float ydif = -sphere.transform.position.y + transform.position.y;
+        float angle = Mathf.Atan2(xdif, ydif) * Mathf.Rad2Deg;
+        transform.transform.rotation = Quaternion.Euler(0, 0, -angle);
+    }
+
     void HandleInput()
     {
         
