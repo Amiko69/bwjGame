@@ -12,6 +12,7 @@ public class NewMovement : MonoBehaviour
     public LayerMask groundLayer;
     Rigidbody2D rb;
     GameObject sphere;
+    Animator animator;
 
     bool bw;
 
@@ -21,6 +22,7 @@ public class NewMovement : MonoBehaviour
         sphere = GameObject.FindGameObjectWithTag("s");
         rb = GetComponent<Rigidbody2D>();
         collider1 = GetComponent<CapsuleCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -56,11 +58,20 @@ public class NewMovement : MonoBehaviour
             {
                 rb.AddForce(transform.up * 10, ForceMode2D.Impulse);
             }
+
+            animator.Play("jump");
+
             justJumped = false;
         }
         transform.position += transform.right * speed;
-        //if (justMovedL)transform.position += transform.right * -speed; justMovedL = false;
-
+        if (rb.velocity.x > 8)
+        {
+            rb.velocity = new Vector2(8, rb.velocity.y);
+        }
+        if (rb.velocity.y > 8)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 8);
+        }
     }
 
     void HandleInput()
