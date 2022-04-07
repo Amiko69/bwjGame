@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    const string CHANGE_DIRECTION = "changeDirection";
+    const string FLIP_ANIMATION = "flipAnimation";
+    const string JUMP_ANIMATION = "Jump";
     const string TURN_ON_COLLIDER = "turnOnCollider";
     const string FLIP_PLAYER = "FlipPlayer";
     const float SWITCH_TIME = 1.0f;
@@ -21,9 +22,9 @@ public class PlayerMovement : MonoBehaviour
     }
     public JumpingStates jumpState = JumpingStates.GROUNDED;
 
-
     public BoxCollider2D playerCollider;
     public Rigidbody2D playerRigidbody;
+    public Animator playerAnimator;
     public GameObject gear;
 
     void Update ()
@@ -78,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
                     playerRigidbody.AddForce(transform.up * JUMP_FORCE, ForceMode2D.Impulse);
                 }
                 jumpState++;
+                playerAnimator.Play(JUMP_ANIMATION, 0, 0f);
             }
         }
     }
@@ -100,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator FlipPlayer()
     {
-        GetComponent<Animator>().SetBool(CHANGE_DIRECTION, true);
+        playerAnimator.SetBool(FLIP_ANIMATION, true);
         yield return new WaitForSeconds(SWITCH_TIME);
         isDownwards = !isDownwards;
         GetComponent<BoxCollider2D>().enabled = false;
@@ -116,6 +118,6 @@ public class PlayerMovement : MonoBehaviour
         // }
         yield return new WaitForSeconds(0.2f);
         GetComponent<BoxCollider2D>().enabled = true;
-        GetComponent<Animator>().SetBool(CHANGE_DIRECTION, false);
+        playerAnimator.SetBool(FLIP_ANIMATION, false);
     }
 }
