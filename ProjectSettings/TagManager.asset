@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ground
   - s
+  - FlipPlayer
   layers:
   - Default
   - TransparentFX
