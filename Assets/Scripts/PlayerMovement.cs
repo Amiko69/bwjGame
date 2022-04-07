@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     const float SWITCH_TIME = 1.0f;
     const float GRAVITY = 30f;
     const float SPEED = .14f;
-    const float JUMP_FORCE = 10f;
+    const float JUMP_FORCE = 11f;
 
     bool isDownwards = false;
     
@@ -68,15 +68,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            //make a new vector3 which represent the velocity.
+            Vector3 playerVelocityV3 = new Vector3(playerRigidbody.velocity.x, playerRigidbody.velocity.y); 
             if (jumpState != JumpingStates.DOUBLE_JUMP)
             {
                 if (isDownwards)
                 {
-                    playerRigidbody.AddForce(-transform.up * JUMP_FORCE, ForceMode2D.Impulse);
+                    playerRigidbody.AddForce(-transform.up * JUMP_FORCE - playerVelocityV3, ForceMode2D.Impulse);
                 }
                 else
                 {
-                    playerRigidbody.AddForce(transform.up * JUMP_FORCE, ForceMode2D.Impulse);
+                    playerRigidbody.AddForce(transform.up * JUMP_FORCE - playerVelocityV3, ForceMode2D.Impulse);
                 }
                 jumpState++;
                 playerAnimator.Play(JUMP_ANIMATION, 0, 0f);
