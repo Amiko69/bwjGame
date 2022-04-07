@@ -8,6 +8,7 @@ public class ColliderScript : MonoBehaviour
     public float Radius;
     void Start()
     {
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
         EdgeCollider2D edgeCollider = GetComponent<EdgeCollider2D>();
         Vector2[] points = new Vector2[NumEdges];
 
