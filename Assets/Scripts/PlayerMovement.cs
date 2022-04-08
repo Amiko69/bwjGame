@@ -3,16 +3,20 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
     const string FLIP_ANIMATION = "flipAnimation";
     const string JUMP_ANIMATION = "Jump";
     const string TURN_ON_COLLIDER = "turnOnCollider";
     const string FLIP_PLAYER = "FlipPlayer";
+    const string FLIP_PARAMETER = "changeDirection";
     const float SWITCH_TIME = 1.0f;
     const float GRAVITY = 30f;
     const float SPEED = .14f;
     const float JUMP_FORCE = 11f;
+    float switchCoolDown = 0f;
 
     bool isDownwards = false;
+    public bool isSwitching = false;
 
     public enum JumpingStates
     {
@@ -25,11 +29,19 @@ public class PlayerMovement : MonoBehaviour
     public BoxCollider2D playerCollider;
     public Rigidbody2D playerRigidbody;
     public Animator playerAnimator;
+    public AnimationClip switchClip;
     public GameObject gear;
 
     void Update()
     {
+
+        switchCoolDown -= Time.deltaTime;
         HandleInput();
+        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
+        {
+            StartCoroutine(FlipPlayer());
+            switchCoolDown = 3;
+        }
     }
 
     void FixedUpdate()
@@ -41,7 +53,9 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        transform.position += transform.right * SPEED;
+        if (!isSwitching)
+            transform.position += transform.right * SPEED;
+
     }
 
     void HandleGravity()
@@ -87,13 +101,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag(FLIP_PLAYER))
-        {
-            StartCoroutine(FlipPlayer());
-        }
-    }
+    // void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     if (other.CompareTag(FLIP_PLAYER))
+    //     {
+    //         StartCoroutine(FlipPlayer());
+    //     }
+    // }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -105,34 +119,34 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator FlipPlayer()
     {
-        playerAnimator.SetBool(FLIP_ANIMATION, true);
-        yield return new WaitForSeconds(SWITCH_TIME);
-        isDownwards = !isDownwards;
-        GetComponent<BoxCollider2D>().enabled = false;
-        GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
-        transform.Translate(transform.up * 10);
-        // if (isDownwards)
-        // {
-        //     playerRigidbody.AddForce(-transform.up * 10, ForceMode2D.Impulse);
-        // }
-        // else
-        // {
-        //     playerRigidbody.AddForce(transform.up * 10, ForceMode2D.Impulse);
-        // }
+        isSwitching = true;
+        float ColliderY = playerCollider.size.y;
+        float ColliderX = playerCollider.size.x;
 
-        yield return new WaitForSeconds(0.2f);
-        GetComponent<BoxCollider2D>().enabled = true;
-        playerAnimator.SetBool(FLIP_ANIMATION, false);
+        playerAnimator.SetBool(FLIP_PARAMETER, true);
+
+        yield return new WaitForSeconds(.4f);
+        playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
+        yield return new WaitForSeconds(1);
+
+
+
+        playerAnimator.SetBool(FLIP_PARAMETER, false);
+
+        yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
+        playerCollider.size = new Vector2(ColliderX, ColliderY);
+
+
+        isSwitching = false;
+
+
 
     }
-    
-    private void tst ()
-    {
-        GameObject.Equals();
-    }
 
-    
-    
+
+
+
+
 
 
 
