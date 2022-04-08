@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     const float JUMP_FORCE = 11f;
 
     bool isDownwards = false;
-    
+
     public enum JumpingStates
     {
         GROUNDED,
@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator playerAnimator;
     public GameObject gear;
 
-    void Update ()
+    void Update()
     {
         HandleInput();
     }
@@ -69,7 +69,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //make a new vector3 which represent the velocity.
-            Vector3 playerVelocityV3 = new Vector3(playerRigidbody.velocity.x, playerRigidbody.velocity.y); 
+            Vector3 playerVelocityV3 = new Vector3(playerRigidbody.velocity.x, playerRigidbody.velocity.y);
+
             if (jumpState != JumpingStates.DOUBLE_JUMP)
             {
                 if (isDownwards)
@@ -118,8 +119,21 @@ public class PlayerMovement : MonoBehaviour
         // {
         //     playerRigidbody.AddForce(transform.up * 10, ForceMode2D.Impulse);
         // }
+
         yield return new WaitForSeconds(0.2f);
         GetComponent<BoxCollider2D>().enabled = true;
         playerAnimator.SetBool(FLIP_ANIMATION, false);
+
     }
+    
+    private void tst ()
+    {
+        GameObject.Equals();
+    }
+
+    
+    
+
+
+
 }
