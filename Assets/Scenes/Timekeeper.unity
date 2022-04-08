@@ -532,6 +532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 817aa8024f5e5294c86d9a458bdc1044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSwitching: 0
   jumpState: 0
   playerCollider: {fileID: 1066818305}
   playerRigidbody: {fileID: 1066818300}
