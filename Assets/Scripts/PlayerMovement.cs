@@ -124,16 +124,5 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<BoxCollider2D>().enabled = true;
         playerAnimator.SetBool(FLIP_ANIMATION, false);
 
-    }
-    
-    private void tst ()
-    {
-        GameObject.Equals();
-    }
-
-    
-    
-
-
-
+    } 
 }
