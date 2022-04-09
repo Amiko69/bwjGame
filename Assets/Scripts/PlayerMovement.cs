@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
+
+    const string BLACK_WHITE = "black";
     const string FLIP_ANIMATION = "flipAnimation";
     const string JUMP_ANIMATION = "Jump";
     const string TURN_ON_COLLIDER = "turnOnCollider";
@@ -17,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
 
     bool isDownwards = false;
     public bool isSwitching = false;
+    bool isBlack = true;
+
 
     public enum JumpingStates
     {
@@ -32,6 +36,9 @@ public class PlayerMovement : MonoBehaviour
     public AnimationClip switchClip;
     public GameObject gear;
 
+    void start()
+    {
+    }
     void Update()
     {
 
@@ -136,6 +143,11 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
         playerCollider.size = new Vector2(ColliderX, ColliderY);
 
+        playerAnimator.SetBool(BLACK_WHITE, randomBool());
+
+        isBlack = !isBlack;
+
+        playerAnimator.SetBool(BLACK_WHITE, false);
 
         isSwitching = false;
 
@@ -143,7 +155,13 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    bool randomBool()
+    {
+        short x = (short)Random.Range(0, 2);
+        if (x == 1) return true;
+        else return false;
 
+    }
 
 
 
