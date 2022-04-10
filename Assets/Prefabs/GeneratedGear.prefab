@@ -78,7 +78,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 12, y: 12}
+  m_Size: {x: 10, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -96,6 +96,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f682cbc547dca347afd60e4c7204bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  texture2D: {fileID: 2800000, guid: 78e6efbe2c8008c4499b5eb9e6e002ec, type: 3}
+  distanceDoublePointMin: 1200
+  distanceDoublePointMax: 1800
+  distanceSinglePointMin: 1450
+  distanceSinglePointMax: 1550
+  angleMin: 5
+  angleMax: 20
   vertices: []
   triangles: 
 --- !u!60 &-7810115364936672854
@@ -114,10 +121,10 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 10, y: 10}
+    newSize: {x: 10, y: 10}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
