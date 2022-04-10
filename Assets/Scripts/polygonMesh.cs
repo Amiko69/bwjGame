@@ -9,11 +9,12 @@ public class polygonMesh : MonoBehaviour
     void Start()
     {
         polyCollider = GetComponent<PolygonCollider2D>();
+        PolyMesh(20, 300);
+
     }
 
     private void Update()
     {
-        PolyMesh(20, 300);
     }
 
     void PolyMesh(float radius, int n)
@@ -69,5 +70,5 @@ public class polygonMesh : MonoBehaviour
 
         polyCollider.SetPath(0, path);
     }
-    
+
 }
