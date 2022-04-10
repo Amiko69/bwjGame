@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-
     const string BLACK_WHITE = "black";
     const string FLIP_ANIMATION = "flipAnimation";
     const string JUMP_ANIMATION = "Jump";
@@ -20,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     bool isDownwards = false;
     public bool isSwitching = false;
     bool isBlack = true;
-
 
     public enum JumpingStates
     {
@@ -38,10 +35,11 @@ public class PlayerMovement : MonoBehaviour
 
     void start()
     {
+
     }
+
     void Update()
     {
-
         switchCoolDown -= Time.deltaTime;
         HandleInput();
         if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
@@ -60,9 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        if (!isSwitching)
-            transform.position += transform.right * SPEED;
-
+        transform.position += transform.right * SPEED;
     }
 
     void HandleGravity()
@@ -89,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //make a new vector3 which represent the velocity.
             Vector3 playerVelocityV3 = new Vector3(playerRigidbody.velocity.x, playerRigidbody.velocity.y);
 
             if (jumpState != JumpingStates.DOUBLE_JUMP)
@@ -136,8 +131,6 @@ public class PlayerMovement : MonoBehaviour
         playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
         yield return new WaitForSeconds(1);
 
-
-
         playerAnimator.SetBool(FLIP_PARAMETER, false);
 
         yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
@@ -150,22 +143,14 @@ public class PlayerMovement : MonoBehaviour
         playerAnimator.SetBool(BLACK_WHITE, false);
 
         isSwitching = false;
-
-
-
     }
 
     bool randomBool()
     {
         short x = (short)Random.Range(0, 2);
-        if (x == 1) return true;
-        else return false;
-
+        if (x == 1) 
+            return true;
+        else 
+            return false;
     }
-
-
-
-
-
-
 }
