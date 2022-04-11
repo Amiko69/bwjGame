@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1654422771732658345}
   - component: {fileID: 1654422771732658346}
-  - component: {fileID: 1654422771732658347}
   m_Layer: 0
   m_Name: LevelGenerator
   m_TagString: Untagged
@@ -51,15 +50,4 @@ MonoBehaviour:
   - 0
   - 1
   gearPrefab: {fileID: 716276660426841894, guid: 3a689553d68cd0f4e9d70b32e458a35c, type: 3}
---- !u!114 &1654422771732658347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1654422771732658340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e400db0bb1cc9e84bb81d79ca8d36677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  playerMovement: {fileID: 0}

@@ -31,12 +31,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D playerRigidbody;
     public Animator playerAnimator;
     public AnimationClip switchClip;
-    public GameObject gear;
-
-    void start()
-    {
-
-    }
+    Gear currentGear;
 
     void Update()
     {
@@ -54,6 +49,11 @@ public class PlayerMovement : MonoBehaviour
         HandleRotation();
         HandleMovement();
         HandleGravity();
+    }
+
+    public void AssignGear(Gear newGear)
+    {
+        currentGear = newGear;
     }
 
     void HandleMovement()
@@ -75,8 +75,8 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleRotation()
     {
-        float xdif = -gear.transform.position.x + transform.position.x;
-        float ydif = -gear.transform.position.y + transform.position.y;
+        float xdif = -currentGear.transform.position.x + transform.position.x;
+        float ydif = -currentGear.transform.position.y + transform.position.y;
         float angle = Mathf.Atan2(xdif, ydif) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, -angle);
     }
@@ -103,17 +103,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag(FLIP_PLAYER))
-    //     {
-    //         StartCoroutine(FlipPlayer());
-    //     }
-    // }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.gameObject == gear)
+        if (collision.collider.gameObject == currentGear.gameObject)
         {
             jumpState = JumpingStates.GROUNDED;
         }
@@ -121,6 +113,8 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator FlipPlayer()
     {
+        // Change assigned gear if in portal
+
         isSwitching = true;
         float ColliderY = playerCollider.size.y;
         float ColliderX = playerCollider.size.x;
