@@ -3,22 +3,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    const string BLACK_WHITE = "black";
     const string FLIP_ANIMATION = "flipAnimation";
     const string JUMP_ANIMATION = "Jump";
     const string TURN_ON_COLLIDER = "turnOnCollider";
     const string FLIP_PLAYER = "FlipPlayer";
     const string FLIP_PARAMETER = "changeDirection";
-    const float SWITCH_TIME = 1.0f;
-    // const float GRAVITY = 30f;
-    const float GRAVITY = 5f;
+    const float SWITCH_TIME = 1.167f;
+    const float GRAVITY = 30f;
     const float SPEED = .14f;
     const float JUMP_FORCE = 11f;
     float switchCoolDown = 0f;
 
     bool isDownwards = false;
     public bool isSwitching = false;
-    bool isBlack = true;
 
     public enum JumpingStates
     {
@@ -119,42 +116,22 @@ public class PlayerMovement : MonoBehaviour
         // Change assigned gear if in portal
 
         isSwitching = true;
-        // float ColliderY = playerCollider.size.y;
-        // float ColliderX = playerCollider.size.x;
-
-        playerAnimator.SetBool(FLIP_PARAMETER, true);
-
-        // yield return new WaitForSeconds(.4f);
-        // playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
-        
-
-
-        yield return new WaitForSeconds(1);
+        playerAnimator.SetBool(FLIP_PARAMETER, true);    
+        yield return new WaitForSeconds(SWITCH_TIME);
         currentGear.GetComponent<EdgeCollider2D>().enabled = false;
-        transform.Translate(-transform.up * 3);
-        isDownwards = true;
+        if (isDownwards)
+        {
+            transform.Translate(transform.up * 2f);
+            playerSpriteRenderer.flipY = !playerSpriteRenderer.flipY;
+        }
+        else
+        {
+            transform.Translate(-transform.up * 2f);
+            playerSpriteRenderer.flipY = !playerSpriteRenderer.flipY;
+        }
+        isDownwards = !isDownwards;
         currentGear.GetComponent<EdgeCollider2D>().enabled = true;
-
         playerAnimator.SetBool(FLIP_PARAMETER, false);
-
-        // yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
-        // playerCollider.size = new Vector2(ColliderX, ColliderY);
-
-        // playerAnimator.SetBool(BLACK_WHITE, randomBool());
-
-        isBlack = !isBlack;
-
-        playerAnimator.SetBool(BLACK_WHITE, false);
-
         isSwitching = false;
-    }
-
-    bool randomBool()
-    {
-        short x = (short)Random.Range(0, 2);
-        if (x == 1)
-            return true;
-        else 
-            return false;
     }
 }
