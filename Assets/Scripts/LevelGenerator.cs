@@ -25,7 +25,7 @@ public class LevelGenerator : MonoBehaviour
             newGear.RandomizeGear();
             if (i == 0)
             {
-                playerMovement.AssignGear(newGear);
+                // playerMovement.AssignGear(newGear);
                 newGear.DecidePositionFromOtherGear(null);
             }
             else

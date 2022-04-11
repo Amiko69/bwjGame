@@ -27,21 +27,18 @@ public class PlayerMovement : MonoBehaviour
     }
     public JumpingStates jumpState = JumpingStates.GROUNDED;
 
+    public SpriteRenderer playerSpriteRenderer;
     public BoxCollider2D playerCollider;
     public Rigidbody2D playerRigidbody;
     public Animator playerAnimator;
     public AnimationClip switchClip;
-    Gear currentGear;
+    // public Gear currentGear;
+    public GameObject currentGear;
 
     void Update()
     {
         switchCoolDown -= Time.deltaTime;
         HandleInput();
-        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
-        {
-            StartCoroutine(FlipPlayer());
-            switchCoolDown = 3;
-        }
     }
 
     void FixedUpdate()
@@ -51,26 +48,26 @@ public class PlayerMovement : MonoBehaviour
         HandleGravity();
     }
 
-    public void AssignGear(Gear newGear)
-    {
-        currentGear = newGear;
-    }
+    // public void AssignGear(Gear newGear)
+    // {
+    //     currentGear = newGear;
+    // }
 
     void HandleMovement()
     {
-        transform.position += transform.right * SPEED;
+        // transform.position += transform.right * SPEED;
     }
 
     void HandleGravity()
     {
-        if (isDownwards)
-        {
-            playerRigidbody.AddForce(transform.up * GRAVITY);
-        }
-        else
-        {
-            playerRigidbody.AddForce(-transform.up * GRAVITY);
-        }
+        // if (isDownwards)
+        // {
+        //     playerRigidbody.AddForce(transform.up * GRAVITY);
+        // }
+        // else
+        // {
+        //     playerRigidbody.AddForce(-transform.up * GRAVITY);
+        // }
     }
 
     void HandleRotation()
@@ -101,6 +98,11 @@ public class PlayerMovement : MonoBehaviour
                 playerAnimator.Play(JUMP_ANIMATION, 0, 0f);
             }
         }
+        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
+        {
+            StartCoroutine(FlipPlayer());
+            switchCoolDown = 3;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -116,19 +118,25 @@ public class PlayerMovement : MonoBehaviour
         // Change assigned gear if in portal
 
         isSwitching = true;
-        float ColliderY = playerCollider.size.y;
-        float ColliderX = playerCollider.size.x;
+        // float ColliderY = playerCollider.size.y;
+        // float ColliderX = playerCollider.size.x;
 
         playerAnimator.SetBool(FLIP_PARAMETER, true);
 
         yield return new WaitForSeconds(.4f);
-        playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
+        // playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
+        
+        currentGear.GetComponent<PolygonCollider2D>().enabled = false;
+        transform.Translate(-transform.up * 10);
+        isDownwards = true;
+
         yield return new WaitForSeconds(1);
+        currentGear.GetComponent<PolygonCollider2D>().enabled = true;
 
         playerAnimator.SetBool(FLIP_PARAMETER, false);
 
         yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
-        playerCollider.size = new Vector2(ColliderX, ColliderY);
+        // playerCollider.size = new Vector2(ColliderX, ColliderY);
 
         playerAnimator.SetBool(BLACK_WHITE, randomBool());
 
@@ -142,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
     bool randomBool()
     {
         short x = (short)Random.Range(0, 2);
-        if (x == 1) 
+        if (x == 1)
             return true;
         else 
             return false;
