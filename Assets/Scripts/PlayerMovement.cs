@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-
     const string BLACK_WHITE = "black";
     const string FLIP_ANIMATION = "flipAnimation";
     const string JUMP_ANIMATION = "Jump";
@@ -12,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
     const string FLIP_PLAYER = "FlipPlayer";
     const string FLIP_PARAMETER = "changeDirection";
     const float SWITCH_TIME = 1.0f;
-    const float GRAVITY = 30f;
+    // const float GRAVITY = 30f;
+    const float GRAVITY = 5f;
     const float SPEED = .14f;
     const float JUMP_FORCE = 11f;
     float switchCoolDown = 0f;
@@ -20,7 +19,6 @@ public class PlayerMovement : MonoBehaviour
     bool isDownwards = false;
     public bool isSwitching = false;
     bool isBlack = true;
-
 
     public enum JumpingStates
     {
@@ -30,25 +28,18 @@ public class PlayerMovement : MonoBehaviour
     }
     public JumpingStates jumpState = JumpingStates.GROUNDED;
 
+    public SpriteRenderer playerSpriteRenderer;
     public BoxCollider2D playerCollider;
     public Rigidbody2D playerRigidbody;
     public Animator playerAnimator;
     public AnimationClip switchClip;
-    public GameObject gear;
+    // public Gear currentGear;
+    public GameObject currentGear;
 
-    void start()
-    {
-    }
     void Update()
     {
-
         switchCoolDown -= Time.deltaTime;
         HandleInput();
-        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
-        {
-            StartCoroutine(FlipPlayer());
-            switchCoolDown = 3;
-        }
     }
 
     void FixedUpdate()
@@ -58,11 +49,14 @@ public class PlayerMovement : MonoBehaviour
         HandleGravity();
     }
 
+    // public void AssignGear(Gear newGear)
+    // {
+    //     currentGear = newGear;
+    // }
+
     void HandleMovement()
     {
-        if (!isSwitching)
-            transform.position += transform.right * SPEED;
-
+        // transform.position += transform.right * SPEED;
     }
 
     void HandleGravity()
@@ -79,8 +73,8 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleRotation()
     {
-        float xdif = -gear.transform.position.x + transform.position.x;
-        float ydif = -gear.transform.position.y + transform.position.y;
+        float xdif = -currentGear.transform.position.x + transform.position.x;
+        float ydif = -currentGear.transform.position.y + transform.position.y;
         float angle = Mathf.Atan2(xdif, ydif) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, -angle);
     }
@@ -89,7 +83,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //make a new vector3 which represent the velocity.
             Vector3 playerVelocityV3 = new Vector3(playerRigidbody.velocity.x, playerRigidbody.velocity.y);
 
             if (jumpState != JumpingStates.DOUBLE_JUMP)
@@ -106,19 +99,16 @@ public class PlayerMovement : MonoBehaviour
                 playerAnimator.Play(JUMP_ANIMATION, 0, 0f);
             }
         }
+        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
+        {
+            StartCoroutine(FlipPlayer());
+            switchCoolDown = 3;
+        }
     }
-
-    // void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag(FLIP_PLAYER))
-    //     {
-    //         StartCoroutine(FlipPlayer());
-    //     }
-    // }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.gameObject == gear)
+        if (collision.collider.gameObject == currentGear.gameObject)
         {
             jumpState = JumpingStates.GROUNDED;
         }
@@ -126,46 +116,45 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator FlipPlayer()
     {
+        // Change assigned gear if in portal
+
         isSwitching = true;
-        float ColliderY = playerCollider.size.y;
-        float ColliderX = playerCollider.size.x;
+        // float ColliderY = playerCollider.size.y;
+        // float ColliderX = playerCollider.size.x;
 
         playerAnimator.SetBool(FLIP_PARAMETER, true);
 
-        yield return new WaitForSeconds(.4f);
-        playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
+        // yield return new WaitForSeconds(.4f);
+        // playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
+        
+
+
         yield return new WaitForSeconds(1);
-
-
+        currentGear.GetComponent<EdgeCollider2D>().enabled = false;
+        transform.Translate(-transform.up * 3);
+        isDownwards = true;
+        currentGear.GetComponent<EdgeCollider2D>().enabled = true;
 
         playerAnimator.SetBool(FLIP_PARAMETER, false);
 
-        yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
-        playerCollider.size = new Vector2(ColliderX, ColliderY);
+        // yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
+        // playerCollider.size = new Vector2(ColliderX, ColliderY);
 
-        playerAnimator.SetBool(BLACK_WHITE, randomBool());
+        // playerAnimator.SetBool(BLACK_WHITE, randomBool());
 
         isBlack = !isBlack;
 
         playerAnimator.SetBool(BLACK_WHITE, false);
 
         isSwitching = false;
-
-
-
     }
 
     bool randomBool()
     {
         short x = (short)Random.Range(0, 2);
-        if (x == 1) return true;
-        else return false;
-
+        if (x == 1)
+            return true;
+        else 
+            return false;
     }
-
-
-
-
-
-
 }

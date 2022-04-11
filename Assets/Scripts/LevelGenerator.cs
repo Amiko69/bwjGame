@@ -9,20 +9,38 @@ public class LevelGenerator : MonoBehaviour
     public float [] ropeRange;
 
     float lastAngle = 0;
-    public Gear gearPrefab;
+    public GameObject gearPrefab;
     
     List <Gear> gears = new List<Gear>();
 
+    public PlayerMovement playerMovement;
+
     void Start()
     {
+
         int i=0;
         do
         {
             Gear newGear = CreateGear();
             newGear.RandomizeGear();
-            // place new gear at connected possition
+            if (i == 0)
+            {
+                // playerMovement.AssignGear(newGear);
+                newGear.DecidePositionFromOtherGear(null);
+            }
+            else
+            {
+                Gear selectedConnectedGearParent;
+                do 
+                {
+                    selectedConnectedGearParent = gears[Random.Range(0, gears.Count - 1)];
+                }
+                while (selectedConnectedGearParent.hasChild);
+                newGear.DecidePositionFromOtherGear(selectedConnectedGearParent);
+                newGear.DecideRotationFromOtherGear(selectedConnectedGearParent);
+            }
             i++;
-        } while (i < 1);
+        } while (i < 3);
         // } while (GearIsNotFinished());
     }
 
@@ -33,7 +51,7 @@ public class LevelGenerator : MonoBehaviour
 
     Gear CreateGear()
     {
-        Gear newGear = GameObject.Instantiate(gearPrefab).GetComponent<Gear>();
+        Gear newGear = GameObject.Instantiate(gearPrefab).GetComponentInChildren<Gear>();
         
         // newWedge.GetComponent<Wedge>().SetRadius(Random.Range(radiusRange[0], radiusRange[1]));
         // newWedge.GetComponent<Wedge>().SetRope(Random.Range(ropeRange[0], ropeRange[1]));

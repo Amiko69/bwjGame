@@ -6,10 +6,19 @@ using UnityEngine;
 public class Gear : MonoBehaviour
 {
     const int TEXTURE_SIZE = 5000;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
+    public EdgeCollider2D edgeCollider2D;
     // public Texture2D texture2D;
 
     private Vector2 center;
+    public bool hasChild;
+
+    enum Rotation 
+    {
+        Right,
+        Left
+    }
+    private Rotation gearRotation;
     
     enum PointType
     {
@@ -32,14 +41,14 @@ public class Gear : MonoBehaviour
     public List <ushort> triangles = new List<ushort>();
     List <Vector2> verticesAux = new List <Vector2>();
 
+    void Update()
+    {
+        transform.parent.Rotate(0, 0, 0.01f);
+    }
+
     public Gear RandomizeGear()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        var texture2D = new Texture2D(TEXTURE_SIZE, TEXTURE_SIZE);
-        center = new Vector2 (TEXTURE_SIZE / 2, TEXTURE_SIZE / 2);
-        spriteRenderer.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
-        spriteRenderer.color = Color.black;
-
+        CreateSprite();
         vertices.Add(center);
         for (int angle = 0 ; angle <= 360; angle += GenerateNextAngle())
         {
@@ -61,6 +70,57 @@ public class Gear : MonoBehaviour
         return this;
     }
 
+    void CreateSprite()
+    {
+        var texture2D = new Texture2D(TEXTURE_SIZE, TEXTURE_SIZE);
+        spriteRenderer.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
+        spriteRenderer.color = Color.black;
+        center = new Vector2 (TEXTURE_SIZE / 2, TEXTURE_SIZE / 2);
+        transform.localScale *= 2;
+    }
+
+    public void DecidePositionFromOtherGear(Gear otherGear)
+    {
+        float x;
+        float y;
+        float distanceFromCenterToCenter;
+        float randomDirectionAngle;
+
+        if (!otherGear)
+        {
+            transform.position -= new Vector3 (center.x / 50, center.y / 50, 0);
+        }
+        else
+        {
+            distanceFromCenterToCenter = 3000;
+            if (Random.Range(0,2) == 0)
+            {
+                randomDirectionAngle = Random.Range(0, 45);
+            }
+            else
+            {
+                randomDirectionAngle = Random.Range(315, 360);
+            }
+            x = otherGear.transform.parent.position.x / 50 + (distanceFromCenterToCenter / 50 * Mathf.Cos(randomDirectionAngle * Mathf.PI / 180));
+            y = otherGear.transform.parent.position.y / 50 + (distanceFromCenterToCenter / 50 * Mathf.Sin(randomDirectionAngle * Mathf.PI / 180));
+            transform.position -= new Vector3 (center.x / 50, center.y / 50, 0);
+            transform.parent.position = new Vector3 (otherGear.transform.parent.position.x + x, otherGear.transform.parent.position.y + y, 0);
+            otherGear.hasChild = true;
+        }
+    }
+
+    public void DecideRotationFromOtherGear(Gear otherGear)
+    {
+        if (otherGear.gearRotation == Rotation.Left)
+        {
+            gearRotation = Rotation.Right;
+        }
+        else
+        {
+            gearRotation = Rotation.Left;
+        }
+    }
+
     void GenerateNextPoint()
     {
         float x;
@@ -72,7 +132,7 @@ public class Gear : MonoBehaviour
         x = center.x + (currentDistance * Mathf.Cos(currentAngle * Mathf.PI / 180));
         y = center.y + (currentDistance * Mathf.Sin(currentAngle * Mathf.PI / 180));
 
-        vertices.Add(new Vector2(x, y));
+        vertices.Add(new Vector2(x + center.x / 50, y + center.y / 50));
     }
     
     void GenerateNextTwoPoints()
@@ -93,8 +153,8 @@ public class Gear : MonoBehaviour
         x2 = center.x + (currentDistance * Mathf.Cos(currentAngle * Mathf.PI / 180));
         y2 = center.y + (currentDistance * Mathf.Sin(currentAngle * Mathf.PI / 180));
 
-        vertices.Add(new Vector2(x1, y1));
-        vertices.Add(new Vector2(x2, y2));
+        vertices.Add(new Vector2(x1 + center.x / 50, y1 + center.y / 50));
+        vertices.Add(new Vector2(x2 + center.x / 50, y2 + center.y / 50));
     }
 
     void GenerateNextTriangle()
@@ -159,6 +219,6 @@ public class Gear : MonoBehaviour
             verticesAux.Add(vertice / 100);
         }
 
-        GetComponent<PolygonCollider2D>().points = verticesAux.ToArray();
+        edgeCollider2D.points = verticesAux.ToArray();
     }
 }
