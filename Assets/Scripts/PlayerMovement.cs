@@ -10,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
     const string FLIP_PLAYER = "FlipPlayer";
     const string FLIP_PARAMETER = "changeDirection";
     const float SWITCH_TIME = 1.0f;
-    const float GRAVITY = 30f;
+    // const float GRAVITY = 30f;
+    const float GRAVITY = 5f;
     const float SPEED = .14f;
     const float JUMP_FORCE = 11f;
     float switchCoolDown = 0f;
@@ -60,14 +61,14 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleGravity()
     {
-        // if (isDownwards)
-        // {
-        //     playerRigidbody.AddForce(transform.up * GRAVITY);
-        // }
-        // else
-        // {
-        //     playerRigidbody.AddForce(-transform.up * GRAVITY);
-        // }
+        if (isDownwards)
+        {
+            playerRigidbody.AddForce(transform.up * GRAVITY);
+        }
+        else
+        {
+            playerRigidbody.AddForce(-transform.up * GRAVITY);
+        }
     }
 
     void HandleRotation()
@@ -123,22 +124,23 @@ public class PlayerMovement : MonoBehaviour
 
         playerAnimator.SetBool(FLIP_PARAMETER, true);
 
-        yield return new WaitForSeconds(.4f);
+        // yield return new WaitForSeconds(.4f);
         // playerCollider.size = new Vector2(ColliderX, ColliderY - 1.5f);
         
-        currentGear.GetComponent<PolygonCollider2D>().enabled = false;
-        transform.Translate(-transform.up * 10);
-        isDownwards = true;
+
 
         yield return new WaitForSeconds(1);
-        currentGear.GetComponent<PolygonCollider2D>().enabled = true;
+        currentGear.GetComponent<EdgeCollider2D>().enabled = false;
+        transform.Translate(-transform.up * 3);
+        isDownwards = true;
+        currentGear.GetComponent<EdgeCollider2D>().enabled = true;
 
         playerAnimator.SetBool(FLIP_PARAMETER, false);
 
-        yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
+        // yield return new WaitForSeconds(switchClip.length * 2 - 1.8f);
         // playerCollider.size = new Vector2(ColliderX, ColliderY);
 
-        playerAnimator.SetBool(BLACK_WHITE, randomBool());
+        // playerAnimator.SetBool(BLACK_WHITE, randomBool());
 
         isBlack = !isBlack;
 

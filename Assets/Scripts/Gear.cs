@@ -7,7 +7,7 @@ public class Gear : MonoBehaviour
 {
     const int TEXTURE_SIZE = 5000;
     public SpriteRenderer spriteRenderer;
-    public PolygonCollider2D polygonCollider2D;
+    public EdgeCollider2D edgeCollider2D;
     // public Texture2D texture2D;
 
     private Vector2 center;
@@ -219,6 +219,6 @@ public class Gear : MonoBehaviour
             verticesAux.Add(vertice / 100);
         }
 
-        polygonCollider2D.points = verticesAux.ToArray();
+        edgeCollider2D.points = verticesAux.ToArray();
     }
 }
