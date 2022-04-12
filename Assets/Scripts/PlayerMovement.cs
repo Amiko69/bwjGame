@@ -16,8 +16,21 @@ public class PlayerMovement : MonoBehaviour
     const float SPEED = .14f;
     const float JUMP_FORCE = 11f;
 
-    float switchCoolDown = 0f;
-    float deathCheckCoolDown = 0f;
+    float SWITCH_COOLDOWN = 1f;
+    float DEATH_COOLDOWN = 0.1f;
+    float WALK_COOLDOWN = 0.3f;
+
+    float switchCurrentCoolDown = 0f;
+    float deathCurrentCheckCoolDown = 0f;
+    float walkCurrentCoolDown = 0f;
+
+    bool isRightFootstep;
+
+    public AudioClip flipAudio;
+    public AudioClip[] walkAudios;
+    public AudioClip[] jumpAudios;
+    public AudioClip dieAudio;
+    public AudioClip usePortal;
 
     Vector2 lastPosition;
 
@@ -31,13 +44,14 @@ public class PlayerMovement : MonoBehaviour
         ONE_JUMP,
         DOUBLE_JUMP
     }
-    public JumpingStates jumpState = JumpingStates.GROUNDED;
+    public JumpingStates jumpState = JumpingStates.ONE_JUMP;
 
     public SpriteRenderer playerSpriteRenderer;
     public BoxCollider2D playerCollider;
     public Rigidbody2D playerRigidbody;
     public Animator playerAnimator;
     public AnimationClip switchClip;
+    public AudioSource playerAudioSource;
     
     private Gear currentGear;
     public LevelGenerator levelGenerator;
@@ -51,15 +65,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isPlayerDeath)
         {
-            switchCoolDown -= Time.deltaTime;
-            deathCheckCoolDown -= Time.deltaTime;
+            UpdateCooldowns();
             HandleInput();
-            if (deathCheckCoolDown <= 0)
-            {
-                CheckDeath();
-                deathCheckCoolDown = 0.1f;
-            }
+            CheckDeath();
         }
+    }
+
+    void UpdateCooldowns()
+    {
+        switchCurrentCoolDown -= Time.deltaTime;
+        deathCurrentCheckCoolDown -= Time.deltaTime;
+        walkCurrentCoolDown -= Time.deltaTime;
     }
 
     void FixedUpdate()
@@ -80,6 +96,20 @@ public class PlayerMovement : MonoBehaviour
     void HandleMovement()
     {
         transform.position += transform.right * SPEED;
+
+        if (walkCurrentCoolDown <= 0 && jumpState == JumpingStates.GROUNDED)
+        {
+            if (isRightFootstep)
+            {
+                PlayAudio(walkAudios[Random.Range(0,2)]);
+            }
+            else
+            {
+                PlayAudio(walkAudios[Random.Range(2,4)]);           
+            }
+            walkCurrentCoolDown = WALK_COOLDOWN;
+            isRightFootstep = !isRightFootstep;
+        }
     }
 
     void HandleGravity()
@@ -121,13 +151,21 @@ public class PlayerMovement : MonoBehaviour
                     playerAnimator.Play(JUMP_ANIMATION_BLACK, 0, 0f);
                 }
                 jumpState++;
+                if (jumpState == JumpingStates.ONE_JUMP)
+                {
+                    PlayAudio(jumpAudios[Random.Range(0,2)]);
+                }
+                else
+                {
+                    PlayAudio(jumpAudios[Random.Range(2,4)]);
+                }
                 // currentGear = levelGenerator.NeareastGearFromPlayer();
             }
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCoolDown <= 0)
+        if (Input.GetKeyDown(KeyCode.DownArrow) && switchCurrentCoolDown <= 0)
         {
             StartCoroutine(FlipPlayer());
-            switchCoolDown = 3;
+            switchCurrentCoolDown = SWITCH_COOLDOWN;
         }
     }
 
@@ -144,7 +182,8 @@ public class PlayerMovement : MonoBehaviour
         // Change assigned gear if in portal
 
         isSwitching = true;
-        playerAnimator.SetBool(FLIP_PARAMETER, true);    
+        playerAnimator.SetBool(FLIP_PARAMETER, true); 
+        PlayAudio(flipAudio);
         yield return new WaitForSeconds(SWITCH_TIME);
         if (!isPlayerDeath)
         {
@@ -186,25 +225,36 @@ public class PlayerMovement : MonoBehaviour
         {
             AssignGear(levelGenerator.NextGear());
             col.gameObject.name = "UsedPortal";
+            PlayAudio(usePortal);
         }
     }
 
     void CheckDeath()
     {
-        // Debug.Log(Vector2.Distance(transform.position, lastPosition));
-        float distanceBetweenPositions = Vector2.Distance(transform.position, lastPosition);
-        if (distanceBetweenPositions < 0.075f || distanceBetweenPositions > 15f)
+        if (deathCurrentCheckCoolDown <= 0)
         {
-            if (isDownwards)
+            float distanceBetweenPositions = Vector2.Distance(transform.position, lastPosition);
+            if (distanceBetweenPositions < 0.075f || distanceBetweenPositions > 15f)
             {
-                playerAnimator.Play(DEATH_ANIMATION_BLACK);
+                if (isDownwards)
+                {
+                    playerAnimator.Play(DEATH_ANIMATION_BLACK);
+                }
+                else
+                {
+                    playerAnimator.Play(DEATH_ANIMATION_WHITE);
+                }
+                isPlayerDeath = true;
+                PlayAudio(dieAudio);
             }
-            else
-            {
-                playerAnimator.Play(DEATH_ANIMATION_WHITE);
-            }
-            isPlayerDeath = true;
+            lastPosition = transform.position;
+            deathCurrentCheckCoolDown = DEATH_COOLDOWN;
         }
-        lastPosition = transform.position;
+    }
+
+    void PlayAudio (AudioClip audioClip)
+    {
+        playerAudioSource.clip = audioClip;
+        playerAudioSource.Play();
     }
 }
