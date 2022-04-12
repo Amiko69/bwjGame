@@ -5,31 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class mainMenu : MonoBehaviour
 {
-    public GameObject creditCanvas;
-    GameObject settingsCanvas;
-    void Start()
+    public static void startGame()
     {
-
+        SceneManager.LoadScene(1);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public static void playButton()
+    public static void loadMenu()
     {
         SceneManager.LoadScene(0);
-    }
-
-    public void creditButton()
-    {
-        creditCanvas.SetActive(true);
-    }
-
-    public void Back()
-    {
-        creditCanvas.SetActive(false);
     }
 }
