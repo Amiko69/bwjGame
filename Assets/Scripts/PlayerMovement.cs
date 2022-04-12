@@ -42,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
     private Gear currentGear;
     public LevelGenerator levelGenerator;
 
+    void Start()
+    {
+        lastPosition = transform.position;
+    }
+
     void Update()
     {
         if (!isPlayerDeath)
@@ -186,8 +191,9 @@ public class PlayerMovement : MonoBehaviour
 
     void CheckDeath()
     {
-        Debug.Log(Vector2.Distance(transform.position, lastPosition));
-        if (Vector2.Distance(transform.position, lastPosition) < 0.1f)
+        // Debug.Log(Vector2.Distance(transform.position, lastPosition));
+        float distanceBetweenPositions = Vector2.Distance(transform.position, lastPosition);
+        if (distanceBetweenPositions < 0.075f || distanceBetweenPositions > 15f)
         {
             if (isDownwards)
             {
