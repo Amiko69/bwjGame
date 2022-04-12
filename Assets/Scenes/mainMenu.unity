@@ -298,21 +298,21 @@ MonoBehaviour:
     m_LineSpacing: 1.2
   m_Text: 'CREDITS:
 
-    AMATSU (DESIGNER)
+    JAIME ALONSO (DESIGNER)
 
-    CANVAS (ARTIST)
+    FLAT WHITE CANVAS (ARTIST)
 
-    SADKUR (DESIGNER)
+    THREE
+    RACCONS (DESIGNER)
 
-    ANTERSTAND
-    (MUSIC)
+    ANT VANDEN (MUSIC)
 
     DOCTOR ASH (DEVELOPER)
 
-    THE KAOSER (DEVELOPER)
+    THE
+    KAOSER (DEVELOPER)
 
-    SFAPUN-VBKA
-    (DEVELOPER)'
+    SFAPUN (DEVELOPER)'
 --- !u!222 &136762231
 CanvasRenderer:
   m_ObjectHideFlags: 0
