@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class Gear : MonoBehaviour
 {
-    const int TEXTURE_SIZE = 5000;
+    const int TEXTURE_SIZE = 1000;
     public SpriteRenderer spriteRenderer;
     public EdgeCollider2D edgeCollider2D;
-    // public Texture2D texture2D;
+    public Texture2D [] gearTextures;
 
     private Vector2 center;
+    public int scale;
     public bool hasChild;
 
     enum Rotation 
@@ -30,10 +31,10 @@ public class Gear : MonoBehaviour
     int currentDistance;
     int currentAngle;
 
-    public int distanceDoublePointMin;
-    public int distanceDoublePointMax;
-    public int distanceSinglePointMin;
-    public int distanceSinglePointMax;
+    public float distanceDoublePointMin;
+    public float distanceDoublePointMax;
+    public float distanceSinglePointMin;
+    public float distanceSinglePointMax;
     public int angleMin;
     public int angleMax;
 
@@ -72,11 +73,11 @@ public class Gear : MonoBehaviour
 
     void CreateSprite()
     {
-        var texture2D = new Texture2D(TEXTURE_SIZE, TEXTURE_SIZE);
+        // var texture2D = new Texture2D (TEXTURE_SIZE, TEXTURE_SIZE);
+        var texture2D = gearTextures[Random.Range(0, 9)];
         spriteRenderer.sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), Vector2.zero);
-        spriteRenderer.color = Color.black;
         center = new Vector2 (TEXTURE_SIZE / 2, TEXTURE_SIZE / 2);
-        transform.localScale *= 2;
+        transform.localScale *= scale;
     }
 
     public void DecidePositionFromOtherGear(Gear otherGear)
@@ -88,11 +89,11 @@ public class Gear : MonoBehaviour
 
         if (!otherGear)
         {
-            transform.position -= new Vector3 (center.x / 50, center.y / 50, 0);
+            transform.position -= new Vector3 (center.x / 100 * scale, center.y / 100 * scale, 0);
         }
         else
         {
-            distanceFromCenterToCenter = 3000;
+            distanceFromCenterToCenter = 0.7f * TEXTURE_SIZE;
             if (Random.Range(0,2) == 0)
             {
                 randomDirectionAngle = Random.Range(0, 45);
@@ -101,9 +102,9 @@ public class Gear : MonoBehaviour
             {
                 randomDirectionAngle = Random.Range(315, 360);
             }
-            x = otherGear.transform.parent.position.x / 50 + (distanceFromCenterToCenter / 50 * Mathf.Cos(randomDirectionAngle * Mathf.PI / 180));
-            y = otherGear.transform.parent.position.y / 50 + (distanceFromCenterToCenter / 50 * Mathf.Sin(randomDirectionAngle * Mathf.PI / 180));
-            transform.position -= new Vector3 (center.x / 50, center.y / 50, 0);
+            x = otherGear.transform.parent.position.x / 100 * scale + (distanceFromCenterToCenter / 100 * scale * Mathf.Cos(randomDirectionAngle * Mathf.PI / 180));
+            y = otherGear.transform.parent.position.y / 100 * scale + (distanceFromCenterToCenter / 100 * scale * Mathf.Sin(randomDirectionAngle * Mathf.PI / 180));
+            transform.position -= new Vector3 (center.x / 100 * scale, center.y / 100 * scale, 0);
             transform.parent.position = new Vector3 (otherGear.transform.parent.position.x + x, otherGear.transform.parent.position.y + y, 0);
             otherGear.hasChild = true;
         }
@@ -128,11 +129,11 @@ public class Gear : MonoBehaviour
 
         currectPointType = PointType.Single;
 
-        currentDistance = Random.Range(distanceSinglePointMin, distanceSinglePointMax);
+        currentDistance = Random.Range((int)(distanceSinglePointMin * TEXTURE_SIZE), (int)(distanceSinglePointMax * TEXTURE_SIZE));
         x = center.x + (currentDistance * Mathf.Cos(currentAngle * Mathf.PI / 180));
         y = center.y + (currentDistance * Mathf.Sin(currentAngle * Mathf.PI / 180));
 
-        vertices.Add(new Vector2(x + center.x / 50, y + center.y / 50));
+        vertices.Add(new Vector2(x + center.x / 100 * scale, y + center.y / 100 * scale));
     }
     
     void GenerateNextTwoPoints()
@@ -144,17 +145,17 @@ public class Gear : MonoBehaviour
 
         currectPointType = PointType.Double;
 
-        currentDistance = Random.Range(distanceDoublePointMin, distanceDoublePointMax);
+        currentDistance = Random.Range((int)(distanceDoublePointMin * TEXTURE_SIZE), (int)(distanceDoublePointMax * TEXTURE_SIZE));
         x1 = center.x + (currentDistance * Mathf.Cos(currentAngle * Mathf.PI / 180));
         y1 = center.y + (currentDistance * Mathf.Sin(currentAngle * Mathf.PI / 180));
 
-        currentDistance = Random.Range(distanceDoublePointMin, distanceDoublePointMax);
+        currentDistance = Random.Range((int)(distanceDoublePointMin * TEXTURE_SIZE), (int)(distanceDoublePointMax * TEXTURE_SIZE));
 
         x2 = center.x + (currentDistance * Mathf.Cos(currentAngle * Mathf.PI / 180));
         y2 = center.y + (currentDistance * Mathf.Sin(currentAngle * Mathf.PI / 180));
 
-        vertices.Add(new Vector2(x1 + center.x / 50, y1 + center.y / 50));
-        vertices.Add(new Vector2(x2 + center.x / 50, y2 + center.y / 50));
+        vertices.Add(new Vector2(x1 + center.x / 100 * scale, y1 + center.y / 100 * scale));
+        vertices.Add(new Vector2(x2 + center.x / 100 * scale, y2 + center.y / 100 * scale));
     }
 
     void GenerateNextTriangle()

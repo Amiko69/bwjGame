@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -10,14 +11,19 @@ public class LevelGenerator : MonoBehaviour
 
     float lastAngle = 0;
     public GameObject gearPrefab;
+    public int score;
     
-    List <Gear> gears = new List<Gear>();
+    public List <Gear> gears = new List<Gear>();
 
     public PlayerMovement playerMovement;
 
     void Start()
     {
+        StartCoroutine(GenerateGears());   
+    }
 
+    IEnumerator GenerateGears()
+    {
         int i=0;
         do
         {
@@ -25,7 +31,7 @@ public class LevelGenerator : MonoBehaviour
             newGear.RandomizeGear();
             if (i == 0)
             {
-                // playerMovement.AssignGear(newGear);
+                playerMovement.AssignGear(newGear);
                 newGear.DecidePositionFromOtherGear(null);
             }
             else
@@ -40,8 +46,10 @@ public class LevelGenerator : MonoBehaviour
                 newGear.DecideRotationFromOtherGear(selectedConnectedGearParent);
             }
             i++;
-        } while (i < 3);
-        // } while (GearIsNotFinished());
+            int currentScore = score;
+            if (i > 2)
+                yield return new WaitUntil(() => score == currentScore + 1);
+        } while (i < 5);
     }
 
     float CalculateTotalAngle(float wedgeAngle)
@@ -52,15 +60,31 @@ public class LevelGenerator : MonoBehaviour
     Gear CreateGear()
     {
         Gear newGear = GameObject.Instantiate(gearPrefab).GetComponentInChildren<Gear>();
-        
-        // newWedge.GetComponent<Wedge>().SetRadius(Random.Range(radiusRange[0], radiusRange[1]));
-        // newWedge.GetComponent<Wedge>().SetRope(Random.Range(ropeRange[0], ropeRange[1]));
         gears.Add(newGear);
         return newGear;
     }
 
-    bool GearIsNotFinished()
+    public Gear NextGear()
     {
-        return false;
+        score++;
+        Debug.Log(score);
+        return gears[score];
+    }
+
+    public Gear NeareastGearFromPlayer()
+    {
+        float minDistance = 10000;
+        float currentDistance;
+        Gear closestGear = gears[0];
+        foreach (Gear currentGear in gears)
+        {
+            currentDistance = Vector2.Distance(currentGear.transform.parent.position, playerMovement.transform.position);
+            if (currentDistance < minDistance)
+            {
+                minDistance = currentDistance;
+                closestGear = currentGear;
+            }
+        }
+        return closestGear;
     }
 }
